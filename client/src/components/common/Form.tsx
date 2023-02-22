@@ -49,7 +49,7 @@ const Form = ({
                                 color: "#11142d",
                             }}
                         >
-                            Enter Property Description
+                            Enter Property Name
                         </FormHelperText>
                         <TextField
                             fullWidth
@@ -70,7 +70,7 @@ const Form = ({
                                 color: "#11142d",
                             }}
                         >
-                            Enter property name
+                            Enter property Description
                         </FormHelperText>
                         <TextareaAutosize
                             minRows={5}
