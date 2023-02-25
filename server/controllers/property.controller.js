@@ -4,6 +4,7 @@ import User from "../mongodb/models/user.js";
 
 import * as dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
+import property from "../mongodb/models/property.js";
 
 dotenv.config();
 
@@ -14,8 +15,28 @@ cloudinary.config({
 });
 
 const getAllProperties = async (req, res) => {
+	const { _end, _order, _start, _sort, title_like = "", propertyType = "" } = req.query;
+
+	const query = {};
+
+	if (propertyType !== "") {
+		query.propertyType = propertyType;
+	}
+
+	if (title_like !== "") {
+		query.title = { $regex: title_like, $options: "i" };
+	}
+
 	try {
-		const properties = await Property.find({}).limit(req.query._end);
+		const count = await Property.countDocuments({query});
+		const properties = await Property
+			.find(query)
+			.limit(_end)
+			.skip(_start)
+			.sort({ [_sort]: _order });
+
+		res.header("X-Total-Count", count);
+		res.header("Access-Control-Expose-Headers", "X-Total-Count")
 
 		res.status(200).json(properties);
 	} catch (error) {
